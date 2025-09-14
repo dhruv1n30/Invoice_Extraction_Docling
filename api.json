@@ -1,0 +1,429 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Invoice Extractor",
+    "description": "An AI-powered invoice extraction tool that automates invoice processing from Invoice PDF and Images.",
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/api/v1/invoice/invoices/health": {
+      "get": {
+        "tags": [
+          "Invoice Extractor",
+          "invoices"
+        ],
+        "summary": "Health Check",
+        "description": "Check the health of the invoice API.",
+        "operationId": "health_check_api_v1_invoice_invoices_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/invoice/invoices/extract": {
+      "post": {
+        "tags": [
+          "Invoice Extractor",
+          "invoices"
+        ],
+        "summary": "Extract From Invoice",
+        "description": "Accepts an invoice file (JPEG, PDF, etc.) and returns the extracted structured data.\n\nArgs:\n    file (UploadFile): The uploaded invoice file.\n\nReturns:\n    StructuredInvoice: The extracted invoice data.\n\nRaises:\n    HTTPException: If the file is invalid or extraction fails.",
+        "operationId": "extract_from_invoice_api_v1_invoice_invoices_extract_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_extract_from_invoice_api_v1_invoice_invoices_extract_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StructuredInvoice"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Body_extract_from_invoice_api_v1_invoice_invoices_extract_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_extract_from_invoice_api_v1_invoice_invoices_extract_post"
+      },
+      "CustomerInfo": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "description": "The name of the customer."
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address",
+            "description": "The customer's billing address."
+          },
+          "customer_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Customer Id",
+            "description": "The customer's unique ID."
+          }
+        },
+        "type": "object",
+        "title": "CustomerInfo",
+        "description": "Pydantic model for customer information."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "InvoiceDetails": {
+        "properties": {
+          "invoice_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Invoice Number",
+            "description": "The unique invoice number."
+          },
+          "date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date",
+            "description": "The date the invoice was issued (YYYY-MM-DD)."
+          },
+          "due_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Due Date",
+            "description": "The date the invoice is due (YYYY-MM-DD)."
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency",
+            "description": "The currency of the invoice amounts (e.g., USD, EUR)."
+          }
+        },
+        "type": "object",
+        "title": "InvoiceDetails",
+        "description": "Pydantic model for core invoice details."
+      },
+      "LineItem": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Description of the product or service."
+          },
+          "quantity": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quantity",
+            "description": "The quantity of the item."
+          },
+          "unit_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Price",
+            "description": "The price per unit of the item."
+          },
+          "total": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total",
+            "description": "The total price for the line item (quantity * unit_price)."
+          }
+        },
+        "type": "object",
+        "title": "LineItem",
+        "description": "Pydantic model for a single line item in the invoice."
+      },
+      "StructuredInvoice": {
+        "properties": {
+          "vendor_info": {
+            "$ref": "#/components/schemas/VendorInfo"
+          },
+          "invoice_details": {
+            "$ref": "#/components/schemas/InvoiceDetails"
+          },
+          "customer_info": {
+            "$ref": "#/components/schemas/CustomerInfo"
+          },
+          "line_items": {
+            "items": {
+              "$ref": "#/components/schemas/LineItem"
+            },
+            "type": "array",
+            "title": "Line Items"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/Totals"
+          }
+        },
+        "type": "object",
+        "title": "StructuredInvoice",
+        "description": "Main Pydantic model that combines all parts of the invoice."
+      },
+      "Totals": {
+        "properties": {
+          "subtotal": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subtotal",
+            "description": "The total amount before taxes."
+          },
+          "tax_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tax Amount",
+            "description": "The total amount of tax."
+          },
+          "total_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Amount",
+            "description": "The final amount due (subtotal + tax)."
+          }
+        },
+        "type": "object",
+        "title": "Totals",
+        "description": "Pydantic model for the invoice totals."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VendorInfo": {
+        "properties": {
+          "company_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Company Name",
+            "description": "The name of the vendor's company."
+          },
+          "address": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Address",
+            "description": "The vendor's address."
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone",
+            "description": "The vendor's phone number."
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email",
+            "description": "The vendor's email address."
+          },
+          "tax_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tax Id",
+            "description": "The vendor's tax identification number."
+          }
+        },
+        "type": "object",
+        "title": "VendorInfo",
+        "description": "Pydantic model for vendor information."
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+line-length = 100
+
+[lint]
+select = [
+  "E",   # pycodestyle errors
+  "F",   # pyflakes
+  "B",   # flake8-bugbear
+  "UP",  # pyupgrade
+  "I",   # import sorting
+  "W",   # pycodestyle warnings
+  "C4",  # flake8-comprehensions
+]
+
+ignore = ["E501","D101","D100"]
+
+
+[format]
+quote-style = "single"
+indent-style = "space"
+docstring-code-format = 
+
+[lint.isort]
+combine-as-imports = true
+force-sort-within-sections = true
+order-by-type = false
+lines-between-types = 1  # One blank line between import groups
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+split-on-trailing-comma = false
+length-sort = true  
