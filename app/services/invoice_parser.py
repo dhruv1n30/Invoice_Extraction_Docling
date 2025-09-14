@@ -1,8 +1,10 @@
-from docling.datamodel.base_models import InputFormat
-from docling.document_extractor import DocumentExtractor
-from app.models.invoice_models import StructuredInvoice
 from loguru import logger
 from fastapi import HTTPException
+from docling.document_extractor import DocumentExtractor
+from docling.datamodel.base_models import InputFormat
+
+from app.models.invoice_models import StructuredInvoice
+
 
 def extract_invoice_data(file_path: str) -> StructuredInvoice:
     """

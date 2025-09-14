@@ -1,10 +1,12 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
-from app.services.invoice_parser import extract_invoice_data
-from app.models.invoice_models import StructuredInvoice
-import shutil
 import os
+import shutil
 import tempfile
+
 from loguru import logger
+from fastapi import File, APIRouter, UploadFile, HTTPException
+
+from app.models.invoice_models import StructuredInvoice
+from app.services.invoice_parser import extract_invoice_data
 
 router = APIRouter(prefix="/invoices", tags=["invoices"])
 
@@ -48,7 +50,7 @@ async def extract_from_invoice(file: UploadFile = File(...)):
         except Exception as e:
             logger.error(f"Error processing file {file.filename}: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Failed to process invoice: {str(e)}")
-        
+
         finally:
             # Clean up the temporary file
             try:

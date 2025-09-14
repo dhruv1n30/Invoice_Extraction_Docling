@@ -17,7 +17,6 @@ ignore = ["E501","D101","D100"]
 [format]
 quote-style = "single"
 indent-style = "space"
-docstring-code-format = 
 
 [lint.isort]
 combine-as-imports = true
